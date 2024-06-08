@@ -327,12 +327,14 @@ export default class Bar {
       this.gantt.options.language,
     );
     const subtitle = `${start_date} -  ${end_date}<br/>Progress: ${this.task.progress}`;
+    const custom_popup_html = isFunction(this.gantt.options.custom_popup_html)?this.gantt.options.custom_popup_html(this.task):subtitle;
 
     this.gantt.show_popup({
       x,
       target_element: this.$bar,
       title: this.task.name,
-      subtitle: subtitle,
+      subtitle: custom_popup_html,
+      // subtitle: subtitle,
       task: this.task,
     });
   }

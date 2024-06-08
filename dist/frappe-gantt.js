@@ -730,12 +730,14 @@ var Gantt = (function () {
         this.gantt.options.language,
       );
       const subtitle = `${start_date} -  ${end_date}<br/>Progress: ${this.task.progress}`;
+      const custom_popup_html = isFunction(this.gantt.options.custom_popup_html)?this.gantt.options.custom_popup_html(this.task):subtitle;
 
       this.gantt.show_popup({
         x,
         target_element: this.$bar,
         title: this.task.name,
-        subtitle: subtitle,
+        subtitle: custom_popup_html,
+        // subtitle: subtitle,
         task: this.task,
       });
     }
@@ -1017,6 +1019,14 @@ var Gantt = (function () {
     }
   }
 
+  function isFunction(functionToCheck) {
+    let getType = {};
+    return (
+      functionToCheck &&
+      getType.toString.call(functionToCheck) === "[object Function]"
+    );
+  }
+
   class Arrow {
     constructor(gantt, from_task, to_task) {
       this.gantt = gantt;
@@ -1214,6 +1224,7 @@ var Gantt = (function () {
     auto_move_label: true,
     today_button: true,
     view_mode_select: false,
+    custom_popup_html: null,
   };
 
   class Gantt {
@@ -1427,6 +1438,7 @@ var Gantt = (function () {
 
     setup_gantt_dates() {
       this.gantt_start = this.gantt_end = null;
+      this.date_utils = date_utils;
 
       for (let task of this.tasks) {
         // set global start and end date
@@ -1624,10 +1636,19 @@ var Gantt = (function () {
         $el.textContent = 'Mode';
         $select.appendChild($el);
 
-        for (const key in VIEW_MODE) {
+        let view_modes = {};
+        if (this.options.view_modes) {
+          for(const view_mode of this.options.view_modes ) {
+            view_modes[view_mode] = view_mode;
+          }      }else {
+          view_modes = VIEW_MODE;
+        }
+        
+        for (const key in view_modes ) {
+        // for (const key in VIEW_MODE ) {
           const $option = document.createElement("option");
-          $option.value = VIEW_MODE[key];
-          $option.textContent = VIEW_MODE[key];
+          $option.value = view_modes[key];
+          $option.textContent = view_modes[key];
           $select.appendChild($option);
         }
         // $select.value = this.options.view_mode

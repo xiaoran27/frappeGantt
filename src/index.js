@@ -48,6 +48,7 @@ const DEFAULT_OPTIONS = {
   auto_move_label: true,
   today_button: true,
   view_mode_select: false,
+  custom_popup_html: null,
 };
 
 export default class Gantt {
@@ -261,6 +262,7 @@ export default class Gantt {
 
   setup_gantt_dates() {
     this.gantt_start = this.gantt_end = null;
+    this.date_utils = date_utils;
 
     for (let task of this.tasks) {
       // set global start and end date
@@ -460,10 +462,20 @@ export default class Gantt {
       $el.textContent = 'Mode'
       $select.appendChild($el)
 
-      for (const key in VIEW_MODE) {
+      let view_modes = {};
+      if (this.options.view_modes) {
+        for(const view_mode of this.options.view_modes ) {
+          view_modes[view_mode] = view_mode
+        };
+      }else{
+        view_modes = VIEW_MODE;
+      }
+      
+      for (const key in view_modes ) {
+      // for (const key in VIEW_MODE ) {
         const $option = document.createElement("option");
-        $option.value = VIEW_MODE[key];
-        $option.textContent = VIEW_MODE[key];
+        $option.value = view_modes[key];
+        $option.textContent = view_modes[key];
         $select.appendChild($option);
       }
       // $select.value = this.options.view_mode
