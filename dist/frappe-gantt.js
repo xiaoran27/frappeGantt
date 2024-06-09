@@ -118,6 +118,7 @@ var Gantt = (function () {
         MMMM: month_name_capitalized,
         MMM: SHORTENED[month_name_capitalized],
       };
+      if ( format_map.MMM === undefined ) format_map.MMM = format_map.MMMM;
 
       let str = format_string;
       const formatted_values = [];
